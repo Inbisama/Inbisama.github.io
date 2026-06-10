@@ -4,6 +4,7 @@ import { subjects } from './questions.js';
 let currentScreen = 'screen-lobby';
 let difficulty = 'easy'; // 'easy' | 'normal' | 'hard'
 let currentSubject = 'safety'; // 'safety' | 'train'
+let questionCountMode = 'all'; // 'all' | '10'
 let questionsList = [];
 let currentQuestionIndex = 0;
 let score = 0;
@@ -194,6 +195,16 @@ function initLobby() {
     });
   });
 
+  // 문항 수 선택 버튼 이벤트 등록
+  const countButtons = document.querySelectorAll('.question-count-options .diff-btn');
+  countButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      countButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      questionCountMode = btn.getAttribute('data-count');
+    });
+  });
+
   // 교육 시작
   btnLobbyEducation.addEventListener('click', () => {
     showScreen('screen-education');
@@ -370,6 +381,11 @@ function startQuiz(isRetryIncorrect = false) {
       questionsList = [...targetSubject.hardQuestions];
     } else {
       questionsList = [...targetSubject.easyQuestions];
+    }
+
+    // 10문제만 풀기 설정 시 무작위 셔플 후 10개 추출
+    if (questionCountMode === '10') {
+      questionsList = shuffleArray(questionsList).slice(0, 10);
     }
   }
 
@@ -654,4 +670,14 @@ function showResults() {
   }
 
   showScreen('screen-results');
+}
+
+// --- 배열 무작위 셔플 헬퍼 함수 ---
+function shuffleArray(array) {
+  const newArr = [...array];
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr;
 }

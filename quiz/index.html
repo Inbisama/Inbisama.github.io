@@ -76,6 +76,21 @@
             </div>
           </div>
 
+          <!-- 문항 수 설정 영역 -->
+          <div class="difficulty-selector" style="margin-top: 20px;">
+            <span class="section-label">문항 수 설정</span>
+            <div class="question-count-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+              <button class="diff-btn active" id="btn-count-all" data-count="all" style="padding: 14px 6px; flex-direction: row; gap: 8px; justify-content: center;">
+                <span class="diff-emoji" style="font-size: 1.1rem; line-height: 1;">📝</span>
+                <span class="diff-name" style="font-size: 0.85rem; font-weight: 700;">전체 문제 풀기</span>
+              </button>
+              <button class="diff-btn" id="btn-count-10" data-count="10" style="padding: 14px 6px; flex-direction: row; gap: 8px; justify-content: center;">
+                <span class="diff-emoji" style="font-size: 1.1rem; line-height: 1;">⏱️</span>
+                <span class="diff-name" style="font-size: 0.85rem; font-weight: 700;">10문제만 풀기</span>
+              </button>
+            </div>
+          </div>
+
           <!-- 로비 액션 버튼들 -->
           <div class="lobby-actions">
             <button id="btn-lobby-start-quiz" class="btn-primary btn-start-quiz">
