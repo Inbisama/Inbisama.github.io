@@ -377,16 +377,30 @@ function startQuiz(isRetryIncorrect = false) {
   } else {
     // 과목 및 난이도에 따른 퀴즈 리스트 설정
     const targetSubject = subjects[currentSubject];
+    let rawQuestions = [];
     if (difficulty === 'hard') {
-      questionsList = [...targetSubject.hardQuestions];
+      rawQuestions = [...targetSubject.hardQuestions];
     } else {
-      questionsList = [...targetSubject.easyQuestions];
+      rawQuestions = [...targetSubject.easyQuestions];
     }
 
-    // 10문제만 풀기 설정 시 무작위 셔플 후 10개 추출
+    // 1. 전체 질문 무작위 셔플링
+    let shuffledQuestions = shuffleArray(rawQuestions);
+
+    // 2. 10문제만 풀기 설정 시 10개 추출
     if (questionCountMode === '10') {
-      questionsList = shuffleArray(questionsList).slice(0, 10);
+      shuffledQuestions = shuffledQuestions.slice(0, 10);
     }
+
+    // 3. 각 질문의 보기 목록 셔플 및 정답 인덱스 갱신
+    questionsList = shuffledQuestions.map(q => {
+      const clonedQ = { ...q, options: [...q.options] };
+      const correctAnswerText = clonedQ.options[clonedQ.answer];
+      
+      clonedQ.options = shuffleArray(clonedQ.options);
+      clonedQ.answer = clonedQ.options.indexOf(correctAnswerText);
+      return clonedQ;
+    });
   }
 
   currentQuestionIndex = 0;
