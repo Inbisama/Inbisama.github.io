@@ -19,6 +19,10 @@ const LIMIT_SECONDS = 25;
 
 // 교육 모드 캐러셀 상태
 let studyCardIndex = 0;
+let lastEduScrollTime = 0;
+let lastEduTouchTime = 0;
+let touchStartX = 0;
+let touchStartY = 0;
 
 // --- DOM 요소 참조 ---
 const screens = {
@@ -125,6 +129,11 @@ function initThemeSwitcher() {
 
 // --- 화면 전환 함수 ---
 function showScreen(screenId) {
+  // 노베이스 속성과외(학습 모드) 화면에서 나가면 카드/스크롤 상태 초기화
+  if (currentScreen === 'screen-education' && screenId !== 'screen-education') {
+    resetEducation();
+  }
+
   // 모든 화면 숨김
   Object.values(screens).forEach(screen => {
     screen.classList.remove('active');
@@ -139,6 +148,15 @@ function showScreen(screenId) {
 
   // 화면 전환 시 열려있던 시트 닫기
   closeExplanationSheet();
+}
+
+// 노베이스 속성과외 상태 초기화 함수
+function resetEducation() {
+  studyCardIndex = 0;
+  if (studyCarousel) {
+    studyCarousel.scrollLeft = 0;
+  }
+  updateIndicators(0);
 }
 
 // --- 족보 오버레이 요약본 초기화 및 설정 ---
@@ -225,7 +243,7 @@ function initLobby() {
       } else if (difficulty === 'normal') {
         lobbyDiffDesc.textContent = "일반적인 시험 모드입니다. 제한 시간이 없으며, 정답 혹은 오답을 클릭한 후에만 교수님 팁(해설)이 노출됩니다.";
       } else if (difficulty === 'hard') {
-        lobbyDiffDesc.textContent = "🔥 매운맛! 교수님 복수 모드. 문항당 제한 시간 15초가 작동하며, 시간 초과 시 가차없이 오답 처리 후 넘어갑니다.";
+        lobbyDiffDesc.textContent = "🔥 매운맛! 교수님 복수 모드. 문항당 제한 시간 25초가 작동하며, 시간 초과 시 가차없이 오답 처리 후 넘어갑니다.";
       }
     });
   });
@@ -289,6 +307,84 @@ function initEducationEvents() {
       loadEducationCard(index);
     }
   });
+
+  // 마우스 휠 및 트랙패드 스크롤 이벤트 (한 번에 딱 하나만 넘어가도록 제어)
+  studyCarousel.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    
+    const now = Date.now();
+    if (now - lastEduScrollTime < 800) {
+      return;
+    }
+    
+    const deltaX = e.deltaX;
+    const deltaY = e.deltaY;
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+    
+    const threshold = 30; // 스크롤 감도 임계값
+    
+    if (absX > threshold || absY > threshold) {
+      const currentStudySections = subjects[currentSubject].studySections;
+      let direction = 0;
+      
+      if (absX > absY) {
+        direction = deltaX > 0 ? 1 : -1;
+      } else {
+        direction = deltaY > 0 ? 1 : -1;
+      }
+      
+      if (direction === 1) {
+        if (studyCardIndex < currentStudySections.length - 1) {
+          lastEduScrollTime = now;
+          loadEducationCard(studyCardIndex + 1);
+        }
+      } else if (direction === -1) {
+        if (studyCardIndex > 0) {
+          lastEduScrollTime = now;
+          loadEducationCard(studyCardIndex - 1);
+        }
+      }
+    }
+  }, { passive: false });
+
+  // 모바일 터치 스와이프 이벤트
+  studyCarousel.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].screenX;
+    touchStartY = e.touches[0].screenY;
+  }, { passive: true });
+
+  studyCarousel.addEventListener('touchend', (e) => {
+    const now = Date.now();
+    if (now - lastEduTouchTime < 800) {
+      return;
+    }
+
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchEndY = e.changedTouches[0].screenY;
+    
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    
+    const threshold = 50; // 스와이프 민감도 임계값 (px)
+    
+    // 수평 스와이프 판정 (수직 움직임보다 수평 움직임이 클 때만 작동)
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
+      const currentStudySections = subjects[currentSubject].studySections;
+      
+      if (diffX < 0) { // 왼쪽으로 스와이프 -> 다음 카드
+        if (studyCardIndex < currentStudySections.length - 1) {
+          lastEduTouchTime = now;
+          loadEducationCard(studyCardIndex + 1);
+        }
+      } else { // 오른쪽으로 스와이프 -> 이전 카드
+        if (studyCardIndex > 0) {
+          lastEduTouchTime = now;
+          loadEducationCard(studyCardIndex - 1);
+        }
+      }
+    }
+  }, { passive: true });
 
   // 로비로 돌아가기
   btnEduBack.addEventListener('click', () => {

@@ -441,13 +441,12 @@ body.light-theme .diff-btn.active[data-subject="train"] {
   overflow: hidden;
 }
 
-/* 카드 슬라이더 영역 - 수평 스크롤 스냅 레이아웃 */
+/* 카드 슬라이더 영역 - 자바스크립트 제어로 전환 */
 .study-carousel {
   flex: 1;
   display: flex;
   flex-direction: row;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  overflow-x: hidden;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   padding: 20px 0;
@@ -463,10 +462,9 @@ body.light-theme .diff-btn.active[data-subject="train"] {
 
 .study-card {
   flex: 0 0 100%;
-  scroll-snap-align: center;
   position: relative;
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: none;
   border-radius: 20px;
   padding: 24px;
   display: flex;
@@ -1080,19 +1078,16 @@ body.light-theme .option-btn:hover:not(:disabled) {
   margin-bottom: 16px;
 }
 
-/* 스크롤바 커스텀 */
+/* 모든 요소에서 스크롤바 감추기 */
+*::-webkit-scrollbar,
 ::-webkit-scrollbar {
-  width: 4px;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+* {
+  -ms-overflow-style: none !important; /* IE/Edge */
+  scrollbar-width: none !important; /* Firefox */
 }
 
 /* 틀렸을 때의 정답/오답 비교 디자인 */
