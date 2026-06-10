@@ -704,6 +704,8 @@ body.light-theme .diff-btn.active[data-subject="train"] {
   line-height: 1.5;
   letter-spacing: -0.3px;
   white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .quiz-options {
@@ -715,7 +717,7 @@ body.light-theme .diff-btn.active[data-subject="train"] {
 
 .option-btn {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--glass-border);
+  border: none;
   border-radius: 16px;
   padding: 16px 20px;
   color: var(--text-primary);
@@ -728,12 +730,21 @@ body.light-theme .diff-btn.active[data-subject="train"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .option-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.08);
-  border-color: var(--glass-border-glow);
   transform: translateX(4px);
+}
+
+body.light-theme .option-btn {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+body.light-theme .option-btn:hover:not(:disabled) {
+  background: rgba(15, 23, 42, 0.08);
 }
 
 .option-btn .option-indicator {
