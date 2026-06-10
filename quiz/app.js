@@ -285,7 +285,7 @@ function renderEducation() {
           ${detailsHtml}
         </div>
         ${index === currentStudySections.length - 1 ? `
-          <button id="btn-edu-direct-quiz" class="btn-primary" style="margin-top: 24px; background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));">
+          <button id="btn-edu-direct-quiz" class="btn-primary btn-start-quiz" style="margin-top: 24px;">
             📖 공부 완료! 바로 시험치기
           </button>
         ` : ''}

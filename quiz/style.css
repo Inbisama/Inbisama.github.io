@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
 
 :root {
-  --bg-color: #08090f;
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.65);
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-border-glow: rgba(255, 255, 255, 0.2);
-  --neon-cyan: #00f0ff;
-  --neon-purple: #bd00ff;
-  --neon-green: #39ff14;
-  --neon-red: #ff3838;
-  --neon-orange: #ff9f1c;
-  --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  --bg-color: #0b0d13;
+  --text-primary: #f8fafc;
+  --text-secondary: rgba(248, 250, 252, 0.65);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-glow: rgba(255, 255, 255, 0.15);
+  --neon-cyan: #38bdf8;   /* 차분한 Sky Blue */
+  --neon-purple: #818cf8; /* 차분한 Indigo */
+  --neon-green: #34d399;  /* 차분한 Emerald Green */
+  --neon-red: #f87171;    /* 차분한 Rose Red */
+  --neon-orange: #fbbf24; /* 차분한 Amber Orange */
+  --card-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
 }
 
 * {
@@ -50,15 +50,15 @@ html, body {
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.5;
+  filter: blur(100px);
+  opacity: 0.12; /* 눈이 편안하도록 대폭 투명화 */
   mix-blend-mode: screen;
 }
 
 .blob-1 {
   width: 350px;
   height: 350px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(99, 102, 241, 0) 70%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0) 70%);
   top: -50px;
   left: -50px;
   animation: float-1 25s infinite alternate ease-in-out;
@@ -67,7 +67,7 @@ html, body {
 .blob-2 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.35) 0%, rgba(139, 92, 246, 0) 70%);
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 70%);
   bottom: -100px;
   right: -50px;
   animation: float-2 30s infinite alternate ease-in-out;
@@ -76,7 +76,7 @@ html, body {
 .blob-3 {
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, rgba(6, 182, 212, 0) 70%);
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0) 70%);
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -170,7 +170,7 @@ html, body {
   font-size: 1.1rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  background: linear-gradient(135deg, #ffffff, #cbd5e1);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -352,14 +352,14 @@ html, body {
 }
 
 .btn-start-quiz {
-  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   color: #ffffff;
-  box-shadow: 0 8px 25px rgba(189, 0, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(29, 78, 216, 0.2);
 }
 
 .btn-start-quiz:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(189, 0, 255, 0.5);
+  box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35);
 }
 
 .btn-secondary {
@@ -591,7 +591,7 @@ html, body {
 .progress-bar-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+  background: var(--neon-cyan);
   border-radius: 3px;
   transition: width 0.3s cubic-bezier(0.1, 0.8, 0.2, 1);
 }
