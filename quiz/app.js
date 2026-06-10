@@ -28,7 +28,7 @@ const screens = {
 };
 
 // 로비 요소
-const diffButtons = document.querySelectorAll('.diff-btn');
+const diffButtons = document.querySelectorAll('.diff-options .diff-btn');
 const lobbyDiffDesc = document.getElementById('lobby-diff-desc');
 const btnLobbyStartQuiz = document.getElementById('btn-lobby-start-quiz');
 const btnLobbyEducation = document.getElementById('btn-lobby-education');
@@ -339,10 +339,8 @@ function initQuizEvents() {
 
   // 퀴즈 포기하고 로비로 탈출
   btnQuizExit.addEventListener('click', () => {
-    if (confirm('정말 시험을 중단하고 홈화면(로비)으로 돌아가시겠습니까?')) {
-      if (timerInterval) clearInterval(timerInterval);
-      showScreen('screen-lobby');
-    }
+    if (timerInterval) clearInterval(timerInterval);
+    showScreen('screen-lobby');
   });
 
   // 다음 문제 버튼
