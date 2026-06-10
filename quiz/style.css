@@ -703,6 +703,7 @@ body.light-theme .diff-btn.active[data-subject="train"] {
   font-weight: 700;
   line-height: 1.5;
   letter-spacing: -0.3px;
+  white-space: pre-line;
 }
 
 .quiz-options {
