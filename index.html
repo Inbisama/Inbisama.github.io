@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>철도안전법 기말고사 족보 퀴즈</title>
+  <meta name="description" content="기말고사 25문제 족보 기반 철도안전법 퀴즈 및 학습 웹 앱">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Liquid Background Blobs -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Main App Container -->
+  <div class="app-container">
+    <div class="glass-panel">
+
+      <!-- ==================== LOBBY SCREEN ==================== -->
+      <div id="screen-lobby" class="screen active">
+        <header class="app-header">
+          <div class="brand-title">RAILWAY SAFETY</div>
+          <button id="btn-open-cheat" class="header-action-btn" title="족보 요약보기">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+              <path d="M6 6h10M6 10h10M6 14h10"/>
+            </svg>
+          </button>
+        </header>
+        
+        <div class="lobby-content">
+          <div class="lobby-hero">
+            <span class="emoji-badge">🏆</span>
+            <h1>철도안전법 기말고사<br>유출 족보 퀴즈</h1>
+            <p>교수님이 대놓고 짚어주신 25가지 족보!<br>노베이스 상태에서 완벽대비해 드립니다.</p>
+          </div>
+
+          <!-- 난이도 선택 영역 -->
+          <div class="difficulty-selector">
+            <span class="section-label">난이도 설정</span>
+            <div class="diff-options">
+              <button class="diff-btn active" data-level="easy">
+                <span class="diff-emoji">🌱</span>
+                <span class="diff-name">순한맛</span>
+              </button>
+              <button class="diff-btn" data-level="normal">
+                <span class="diff-emoji">🔥</span>
+                <span class="diff-name">보통맛</span>
+              </button>
+              <button class="diff-btn" data-level="hard">
+                <span class="diff-emoji">🌶️</span>
+                <span class="diff-name">매운맛</span>
+              </button>
+            </div>
+            <div id="lobby-diff-desc" class="diff-description">
+              시간 제한이 없으며, 문제를 푸는 중에 '교수님 뇌피셜 팁(힌트)'을 실시간으로 확인하며 공부할 수 있습니다.
+            </div>
+          </div>
+
+          <!-- 로비 액션 버튼들 -->
+          <div class="lobby-actions">
+            <button id="btn-lobby-start-quiz" class="btn-primary btn-start-quiz">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              족보 시험 치기 (퀴즈)
+            </button>
+            <button id="btn-lobby-education" class="btn-secondary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              노베이스 속성 과외 (학습)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== EDUCATION SCREEN ==================== -->
+      <div id="screen-education" class="screen">
+        <header class="app-header">
+          <button id="btn-edu-back" class="header-action-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <div class="brand-title">노베이스 속성 과외</div>
+          <button id="btn-edu-open-cheat" class="header-action-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+              <path d="M6 6h10M6 10h10M6 14h10"/>
+            </svg>
+          </button>
+        </header>
+
+        <div class="education-body">
+          <!-- 카드 캐러셀 -->
+          <div id="study-carousel" class="study-carousel">
+            <!-- JS에서 동적으로 학습 카드가 로드됩니다. -->
+          </div>
+
+          <!-- 하단 슬라이더 컨트롤러 -->
+          <div class="carousel-controls">
+            <div class="nav-arrows">
+              <button id="btn-edu-prev" class="nav-arrow-btn" disabled>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button id="btn-edu-next" class="nav-arrow-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+            <div id="carousel-indicators" class="carousel-indicators">
+              <!-- JS에서 동적으로 인디케이터 닷 생성 -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== QUIZ SCREEN ==================== -->
+      <div id="screen-quiz" class="screen">
+        <header class="quiz-header">
+          <div class="quiz-status-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+            <span id="quiz-category" class="q-category">1구역: 철도차량 안전운행 규정</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="quiz-progress-text" class="q-progress-text" style="white-space: nowrap;">1 / 27</span>
+              <button id="btn-quiz-exit" class="header-action-btn" title="포기하고 홈으로" style="width: 28px; height: 28px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <!-- 진행도 게이지 -->
+          <div class="progress-bar-container">
+            <div id="quiz-progress-fill" class="progress-bar-fill"></div>
+          </div>
+          <!-- 매운맛 전용 15초 타이머 게이지 -->
+          <div id="quiz-timer-container" class="timer-container">
+            <div id="quiz-timer-fill" class="timer-fill"></div>
+          </div>
+        </header>
+
+        <div id="quiz-panel-card" class="quiz-body">
+          <div class="quiz-question-container">
+            <!-- 순한맛일 때만 활성화되는 힌트 버튼 -->
+            <button id="btn-quiz-hint" class="hint-trigger-btn">💡 족보 힌트 보기</button>
+            <div id="quiz-question" class="q-question">
+              열차가 역에 도착하거나 출발하기 몇 분 전에는 선로를 지장하는 입환 작업을 할 수 없을까요?
+            </div>
+          </div>
+
+          <!-- 4지선다형 버튼 리스트 -->
+          <div id="quiz-options" class="quiz-options">
+            <button class="option-btn" data-index="0">
+              <span class="option-indicator">1</span>
+              <span class="option-text">3분 전</span>
+            </button>
+            <button class="option-btn" data-index="1">
+              <span class="option-indicator">2</span>
+              <span class="option-text">5분 전</span>
+            </button>
+            <button class="option-btn" data-index="2">
+              <span class="option-indicator">3</span>
+              <span class="option-text">10분 전</span>
+            </button>
+            <button class="option-btn" data-index="3">
+              <span class="option-indicator">4</span>
+              <span class="option-text">15분 전</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 슬라이드 업 해설 바텀 시트 -->
+        <div id="explanation-sheet" class="explanation-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-content">
+            <div id="sheet-status" class="sheet-status-badge">정답입니다! 🎉</div>
+            <div id="sheet-correct-answer" class="sheet-correct-answer">정답: <strong>5분 전</strong></div>
+            <div class="sheet-tip-box">
+              <h4>💡 교수님 뇌피셜 팁</h4>
+              <p id="sheet-explanation">열차 도착/출발 5분 전에는 입환 제한! 단, 여유 거리가 200m 이상일 때는 예외로 인정됩니다.</p>
+            </div>
+            <button id="btn-sheet-close" class="btn-secondary" style="display: none; width: 100%; margin-top: 10px; margin-bottom: 5px;">
+              힌트 닫고 문제 풀기
+            </button>
+            <button id="btn-sheet-next" class="btn-primary">
+              다음 문제로 가기
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== RESULTS SCREEN ==================== -->
+      <div id="screen-results" class="screen">
+        <header class="app-header">
+          <div class="brand-title">최종 성적표</div>
+          <button id="btn-results-lobby" class="header-action-btn" title="로비로 가기">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </button>
+        </header>
+
+        <div class="results-body">
+          <div class="score-display">
+            <div id="result-grade-badge" class="grade-badge-container">
+              <span id="result-grade" class="grade-text">A+</span>
+            </div>
+            <div class="score-text">
+              내 점수: <strong id="result-score">90</strong> / 100 점
+            </div>
+            <p id="result-message" class="result-message">
+              교수님께 제대로 복수했습니다! 완벽한 A+입니다!
+            </p>
+          </div>
+
+          <!-- 상세 결과 리포트 -->
+          <div class="stats-summary">
+            <div class="stat-item">
+              <div id="stat-correct-count" class="stat-val">25 / 27</div>
+              <div class="stat-label">정답 개수</div>
+            </div>
+            <div class="stat-item">
+              <div id="stat-difficulty" class="stat-val">순한맛</div>
+              <div class="stat-label">도전 난이도</div>
+            </div>
+          </div>
+
+          <!-- 결과 페이지 하단 액션 -->
+          <div class="results-actions">
+            <button id="btn-retry-incorrect" class="btn-primary review-incorrect-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6"/>
+              </svg>
+              틀린 문제만 다시 풀기
+            </button>
+            <button id="btn-restart-quiz" class="btn-secondary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                <path d="M21 3v5h-5"/>
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                <path d="M3 21v-5h5"/>
+              </svg>
+              이 난이도로 처음부터 다시 풀기
+            </button>
+            <button id="btn-back-to-lobby" class="btn-secondary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              난이도 재설정 (로비로)
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== SIDE SLIDE-OVER CHEAT SHEET ==================== -->
+  <div id="cheat-sheet-overlay" class="overlay-sheet">
+    <div class="overlay-panel">
+      <header class="overlay-header">
+        <div class="brand-title">📖 기말 족보 요약본</div>
+        <button id="btn-close-cheat" class="overlay-close-btn" title="닫기">&times;</button>
+      </header>
+      <div id="cheat-sheet-body" class="overlay-body">
+        <!-- JS에서 6개 구역에 대한 족보가 들어갑니다. -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
