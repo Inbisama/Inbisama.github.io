@@ -523,19 +523,45 @@ function openExplanationSheet(status, isHintOnly = false, userSelectedText = '')
     sheetCorrectAnswer.style.display = 'block';
     btnSheetNext.style.display = 'flex'; // 다음버튼 복원
     btnSheetClose.style.display = 'none'; // 일반 모드에선 닫기버튼 숨김
-    sheetCorrectAnswer.innerHTML = `정답: <strong>${qData.options[qData.answer]}</strong>`;
     sheetExplanation.innerHTML = qData.tip;
 
     if (status === 'correct') {
       sheetStatus.textContent = "정답입니다! 🎉";
       sheetStatus.className = "sheet-status-badge correct";
+      sheetCorrectAnswer.innerHTML = `
+        <div class="answer-comparison-container" style="border-color: rgba(57, 255, 20, 0.2); background: rgba(57, 255, 20, 0.03);">
+          <div class="answer-line correct-final" style="border: none; padding: 0; margin: 0;">
+            <span>🎯 내가 맞춘 정답</span>
+            <span class="ans-val">${qData.options[qData.answer]}</span>
+          </div>
+        </div>
+      `;
     } else if (status === 'incorrect') {
       sheetStatus.textContent = "오답입니다! 😢";
       sheetStatus.className = "sheet-status-badge incorrect";
-      sheetCorrectAnswer.innerHTML = `내가 고른 답: <span style="text-decoration: line-through; color: var(--neon-red);">${userSelectedText}</span><br>정답: <strong>${qData.options[qData.answer]}</strong>`;
+      sheetCorrectAnswer.innerHTML = `
+        <div class="answer-comparison-container">
+          <div class="answer-line user-wrong">
+            <span>내가 고른 답</span>
+            <span class="ans-val">${userSelectedText}</span>
+          </div>
+          <div class="answer-line correct-final">
+            <span>🎯 진짜 정답</span>
+            <span class="ans-val">${qData.options[qData.answer]}</span>
+          </div>
+        </div>
+      `;
     } else if (status === 'timeout') {
       sheetStatus.textContent = "시간 초과! ⏱️";
       sheetStatus.className = "sheet-status-badge timeout";
+      sheetCorrectAnswer.innerHTML = `
+        <div class="answer-comparison-container" style="border-color: rgba(255, 159, 28, 0.2); background: rgba(255, 159, 28, 0.03);">
+          <div class="answer-line correct-final" style="border: none; padding: 0; margin: 0;">
+            <span>🎯 놓친 진짜 정답</span>
+            <span class="ans-val">${qData.options[qData.answer]}</span>
+          </div>
+        </div>
+      `;
     }
   }
 
