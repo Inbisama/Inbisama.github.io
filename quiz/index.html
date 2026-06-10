@@ -58,11 +58,9 @@
             <span class="section-label">과목 선택</span>
             <div class="subject-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
               <button class="diff-btn active" id="btn-sub-safety" data-subject="safety" style="padding: 14px 6px; flex-direction: row; gap: 8px; justify-content: center;">
-                <span class="diff-emoji" style="font-size: 1.1rem; line-height: 1;">⚖️</span>
                 <span class="diff-name" style="font-size: 0.85rem; font-weight: 700;">철도안전법</span>
               </button>
               <button class="diff-btn" id="btn-sub-train" data-subject="train" style="padding: 14px 6px; flex-direction: row; gap: 8px; justify-content: center;">
-                <span class="diff-emoji" style="font-size: 1.1rem; line-height: 1;">⚡</span>
                 <span class="diff-name" style="font-size: 0.85rem; font-weight: 700;">전기동차</span>
               </button>
             </div>
@@ -71,18 +69,15 @@
           <!-- 난이도 선택 영역 -->
           <div class="difficulty-selector">
             <span class="section-label">난이도 설정</span>
-            <div class="diff-options">
-              <button class="diff-btn active" data-level="easy">
-                <span class="diff-emoji">🌱</span>
-                <span class="diff-name">순한맛</span>
+            <div class="diff-options" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+              <button class="diff-btn active" data-level="easy" style="padding: 14px 6px; flex-direction: row; gap: 8px; justify-content: center;">
+                <span class="diff-name" style="font-size: 0.85rem; font-weight: 700;">순한맛</span>
               </button>
-              <button class="diff-btn" data-level="normal">
-                <span class="diff-emoji">🔥</span>
-                <span class="diff-name">보통맛</span>
+              <button class="diff-btn" data-level="normal" style="padding: 14px 6px; flex-direction: row; gap: 8px; justify-content: center;">
+                <span class="diff-name" style="font-size: 0.85rem; font-weight: 700;">보통맛</span>
               </button>
-              <button class="diff-btn" data-level="hard">
-                <span class="diff-emoji">🌶️</span>
-                <span class="diff-name">매운맛</span>
+              <button class="diff-btn" data-level="hard" style="padding: 14px 6px; flex-direction: row; gap: 8px; justify-content: center;">
+                <span class="diff-name" style="font-size: 0.85rem; font-weight: 700;">매운맛</span>
               </button>
             </div>
             <div id="lobby-diff-desc" class="diff-description">
@@ -95,11 +90,9 @@
             <span class="section-label">문항 수 설정</span>
             <div class="question-count-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
               <button class="diff-btn active" id="btn-count-all" data-count="all" style="padding: 14px 6px; flex-direction: row; gap: 8px; justify-content: center;">
-                <span class="diff-emoji" style="font-size: 1.1rem; line-height: 1;">📝</span>
                 <span class="diff-name" style="font-size: 0.85rem; font-weight: 700;">전체 문제 풀기</span>
               </button>
               <button class="diff-btn" id="btn-count-10" data-count="10" style="padding: 14px 6px; flex-direction: row; gap: 8px; justify-content: center;">
-                <span class="diff-emoji" style="font-size: 1.1rem; line-height: 1;">⏱️</span>
                 <span class="diff-name" style="font-size: 0.85rem; font-weight: 700;">10문제만 풀기</span>
               </button>
             </div>
