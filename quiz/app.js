@@ -81,7 +81,8 @@ const btnBackToLobby = document.getElementById('btn-back-to-lobby');
 window.addEventListener('DOMContentLoaded', () => {
   initLobby();
   initCheatSheet();
-  initEducation();
+  initEducationEvents();
+  renderEducation();
   initQuizEvents();
   initResultsEvents();
 });
@@ -171,7 +172,7 @@ function initLobby() {
 
       // 족보 내용 및 과외 카드 갱신
       initCheatSheet();
-      initEducation();
+      renderEducation();
     });
   });
 
@@ -209,7 +210,55 @@ function initLobby() {
 }
 
 // --- 교육 모드 기능 설정 ---
-function initEducation() {
+function initEducationEvents() {
+  // 수평 스크롤 위치에 따른 인디케이터 및 버튼 갱신
+  studyCarousel.addEventListener('scroll', () => {
+    const width = studyCarousel.clientWidth || 350;
+    const index = Math.round(studyCarousel.scrollLeft / width);
+    const currentStudySections = subjects[currentSubject].studySections;
+    if (index !== studyCardIndex && index >= 0 && index < currentStudySections.length) {
+      updateIndicators(index);
+    }
+  });
+
+  // 이전/다음 버튼 이벤트
+  btnEduPrev.addEventListener('click', () => {
+    if (studyCardIndex > 0) {
+      loadEducationCard(studyCardIndex - 1);
+    }
+  });
+
+  btnEduNext.addEventListener('click', () => {
+    const currentStudySections = subjects[currentSubject].studySections;
+    if (studyCardIndex < currentStudySections.length - 1) {
+      loadEducationCard(studyCardIndex + 1);
+    }
+  });
+
+  // 인디케이터 클릭 이벤트
+  carouselIndicators.addEventListener('click', (e) => {
+    const dot = e.target.closest('.indicator-dot');
+    if (dot) {
+      const index = parseInt(dot.getAttribute('data-index'));
+      loadEducationCard(index);
+    }
+  });
+
+  // 로비로 돌아가기
+  btnEduBack.addEventListener('click', () => {
+    showScreen('screen-lobby');
+  });
+
+  // 마지막 카드의 바로 풀기 단추 바인딩 (이벤트 위임)
+  studyCarousel.addEventListener('click', (e) => {
+    const target = e.target.closest('#btn-edu-direct-quiz');
+    if (target) {
+      startQuiz(false);
+    }
+  });
+}
+
+function renderEducation() {
   const currentStudySections = subjects[currentSubject].studySections;
   // 교육 카드 동적 렌더링
   let cardHtml = '';
@@ -249,49 +298,9 @@ function initEducation() {
   studyCarousel.innerHTML = cardHtml;
   carouselIndicators.innerHTML = dotHtml;
 
-  // 수평 스크롤 위치에 따른 인디케이터 및 버튼 갱신
-  studyCarousel.addEventListener('scroll', () => {
-    const width = studyCarousel.clientWidth || 350;
-    const index = Math.round(studyCarousel.scrollLeft / width);
-    if (index !== studyCardIndex && index >= 0 && index < currentStudySections.length) {
-      updateIndicators(index);
-    }
-  });
-
-  // 이전/다음 버튼 이벤트
-  btnEduPrev.addEventListener('click', () => {
-    if (studyCardIndex > 0) {
-      loadEducationCard(studyCardIndex - 1);
-    }
-  });
-
-  btnEduNext.addEventListener('click', () => {
-    if (studyCardIndex < currentStudySections.length - 1) {
-      loadEducationCard(studyCardIndex + 1);
-    }
-  });
-
-  // 인디케이터 클릭 이벤트
-  carouselIndicators.addEventListener('click', (e) => {
-    const dot = e.target.closest('.indicator-dot');
-    if (dot) {
-      const index = parseInt(dot.getAttribute('data-index'));
-      loadEducationCard(index);
-    }
-  });
-
-  // 로비로 돌아가기
-  btnEduBack.addEventListener('click', () => {
-    showScreen('screen-lobby');
-  });
-
-  // 마지막 카드의 바로 풀기 단추 바인딩
-  studyCarousel.addEventListener('click', (e) => {
-    const target = e.target.closest('#btn-edu-direct-quiz');
-    if (target) {
-      startQuiz(false);
-    }
-  });
+  // 상태 리셋
+  studyCarousel.scrollLeft = 0;
+  updateIndicators(0);
 }
 
 function loadEducationCard(index) {
