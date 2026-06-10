@@ -302,6 +302,21 @@ html, body {
   box-shadow: 0 0 15px rgba(255, 56, 56, 0.2);
 }
 
+/* Active states for subjects */
+.diff-btn.active[data-subject="safety"] {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+}
+
+.diff-btn.active[data-subject="train"] {
+  background: rgba(255, 159, 28, 0.15);
+  border-color: var(--neon-orange);
+  color: var(--neon-orange);
+  box-shadow: 0 0 15px rgba(255, 159, 28, 0.25);
+}
+
 /* 난이도 설명 텍스트 */
 .diff-description {
   text-align: center;

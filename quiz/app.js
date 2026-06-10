@@ -1,8 +1,9 @@
-import { studySections, easyQuestions, hardQuestions } from './questions.js';
+import { subjects } from './questions.js';
 
 // --- 상태 관리 변수 ---
 let currentScreen = 'screen-lobby';
 let difficulty = 'easy'; // 'easy' | 'normal' | 'hard'
+let currentSubject = 'safety'; // 'safety' | 'train'
 let questionsList = [];
 let currentQuestionIndex = 0;
 let score = 0;
@@ -105,9 +106,29 @@ function showScreen(screenId) {
 
 // --- 족보 오버레이 요약본 초기화 및 설정 ---
 function initCheatSheet() {
+  renderCheatSheet();
+
+  // 최초 1회만 이벤트 등록
+  if (!initCheatSheet.initialized) {
+    btnOpenCheat.addEventListener('click', () => cheatSheetOverlay.classList.add('active'));
+    btnEduOpenCheat.addEventListener('click', () => cheatSheetOverlay.classList.add('active'));
+    btnCloseCheat.addEventListener('click', () => cheatSheetOverlay.classList.remove('active'));
+    
+    // 바깥 영역 클릭 시 닫기
+    cheatSheetOverlay.addEventListener('click', (e) => {
+      if (e.target === cheatSheetOverlay) {
+        cheatSheetOverlay.classList.remove('active');
+      }
+    });
+    initCheatSheet.initialized = true;
+  }
+}
+
+function renderCheatSheet() {
+  const currentStudySections = subjects[currentSubject].studySections;
   // 족보 내용 동적 삽입
   let html = '';
-  studySections.forEach(section => {
+  currentStudySections.forEach(section => {
     html += `
       <div style="margin-bottom: 24px; border-bottom: 1.5px dashed rgba(255,255,255,0.08); padding-bottom: 20px;">
         <h4 style="color: var(--neon-orange); font-size: 0.95rem; margin-bottom: 8px; font-weight: 800;">${section.title}</h4>
@@ -124,22 +145,36 @@ function initCheatSheet() {
     html += `</div></div>`;
   });
   cheatSheetBody.innerHTML = html;
-
-  // 열기 / 닫기
-  btnOpenCheat.addEventListener('click', () => cheatSheetOverlay.classList.add('active'));
-  btnEduOpenCheat.addEventListener('click', () => cheatSheetOverlay.classList.add('active'));
-  btnCloseCheat.addEventListener('click', () => cheatSheetOverlay.classList.remove('active'));
-  
-  // 바깥 영역 클릭 시 닫기
-  cheatSheetOverlay.addEventListener('click', (e) => {
-    if (e.target === cheatSheetOverlay) {
-      cheatSheetOverlay.classList.remove('active');
-    }
-  });
 }
 
 // --- 로비 화면 기능 설정 ---
 function initLobby() {
+  // 과목 선택 버튼 이벤트 등록
+  const subButtons = document.querySelectorAll('.subject-options .diff-btn');
+  const lobbyTitle = document.getElementById('lobby-main-title');
+  const lobbyDesc = document.getElementById('lobby-main-desc');
+
+  subButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      subButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentSubject = btn.getAttribute('data-subject');
+
+      // 과목별 헤더 텍스트 변경
+      if (currentSubject === 'safety') {
+        lobbyTitle.innerHTML = "철도 기말고사<br>유출 족보 퀴즈";
+        lobbyDesc.innerHTML = "교수님이 대놓고 짚어주신 25가지 족보!<br>노베이스 상태에서 완벽대비해 드립니다.";
+      } else {
+        lobbyTitle.innerHTML = "전기동차 제어 기말고사<br>유출 족보 퀴즈";
+        lobbyDesc.innerHTML = "제어 알고리즘 38선 및 주관식 4선 완벽 수록!<br>노베이스 상태에서 마스터해 드립니다.";
+      }
+
+      // 족보 내용 및 과외 카드 갱신
+      initCheatSheet();
+      initEducation();
+    });
+  });
+
   // 난이도 버튼 클릭 이벤트 등록
   diffButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -175,11 +210,12 @@ function initLobby() {
 
 // --- 교육 모드 기능 설정 ---
 function initEducation() {
+  const currentStudySections = subjects[currentSubject].studySections;
   // 교육 카드 동적 렌더링
   let cardHtml = '';
   let dotHtml = '';
 
-  studySections.forEach((section, index) => {
+  currentStudySections.forEach((section, index) => {
     let detailsHtml = '';
     section.details.forEach(detail => {
       detailsHtml += `
@@ -199,7 +235,7 @@ function initEducation() {
         <div class="study-details-list">
           ${detailsHtml}
         </div>
-        ${index === studySections.length - 1 ? `
+        ${index === currentStudySections.length - 1 ? `
           <button id="btn-edu-direct-quiz" class="btn-primary" style="margin-top: 24px; background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));">
             📖 공부 완료! 바로 시험치기
           </button>
@@ -217,21 +253,12 @@ function initEducation() {
   studyCarousel.addEventListener('scroll', () => {
     const width = studyCarousel.clientWidth || 350;
     const index = Math.round(studyCarousel.scrollLeft / width);
-    if (index !== studyCardIndex && index >= 0 && index < studySections.length) {
+    if (index !== studyCardIndex && index >= 0 && index < currentStudySections.length) {
       updateIndicators(index);
     }
   });
 
-  // 인디케이터 도트 클릭 시 카드 스크롤 이동
-  carouselIndicators.addEventListener('click', (e) => {
-    const dot = e.target.closest('.indicator-dot');
-    if (dot) {
-      const index = parseInt(dot.getAttribute('data-index'));
-      loadEducationCard(index);
-    }
-  });
-
-  // 이전 / 다음 제어
+  // 이전/다음 버튼 이벤트
   btnEduPrev.addEventListener('click', () => {
     if (studyCardIndex > 0) {
       loadEducationCard(studyCardIndex - 1);
@@ -239,8 +266,17 @@ function initEducation() {
   });
 
   btnEduNext.addEventListener('click', () => {
-    if (studyCardIndex < studySections.length - 1) {
+    if (studyCardIndex < currentStudySections.length - 1) {
       loadEducationCard(studyCardIndex + 1);
+    }
+  });
+
+  // 인디케이터 클릭 이벤트
+  carouselIndicators.addEventListener('click', (e) => {
+    const dot = e.target.closest('.indicator-dot');
+    if (dot) {
+      const index = parseInt(dot.getAttribute('data-index'));
+      loadEducationCard(index);
     }
   });
 
@@ -277,7 +313,7 @@ function updateIndicators(index) {
 
   // 버튼 활성상태 조절
   btnEduPrev.disabled = index === 0;
-  btnEduNext.disabled = index === studySections.length - 1;
+  btnEduNext.disabled = index === subjects[currentSubject].studySections.length - 1;
 }
 
 // --- 퀴즈 모드 로직 ---
@@ -321,11 +357,12 @@ function startQuiz(isRetryIncorrect = false) {
     // 오답 리스트로 퀴즈 셋 설정
     questionsList = [...incorrectQuestions];
   } else {
-    // 난이도에 따른 퀴즈 리스트 설정
+    // 과목 및 난이도에 따른 퀴즈 리스트 설정
+    const targetSubject = subjects[currentSubject];
     if (difficulty === 'hard') {
-      questionsList = [...hardQuestions];
+      questionsList = [...targetSubject.hardQuestions];
     } else {
-      questionsList = [...easyQuestions];
+      questionsList = [...targetSubject.easyQuestions];
     }
   }
 
