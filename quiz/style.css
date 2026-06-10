@@ -271,7 +271,7 @@ html, body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-secondary);
   margin-bottom: 12px;
   display: block;
   text-align: center;
@@ -1145,4 +1145,38 @@ body.light-theme .option-btn:hover:not(:disabled) {
 
 body.light-theme .question-count-options .diff-btn.active {
   background: rgba(79, 70, 229, 0.12);
+}
+
+/* --- Light Theme Text Visibility Overrides --- */
+body.light-theme .brand-title {
+  background: linear-gradient(135deg, #0f172a, #475569);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .detail-item .text {
+  color: var(--text-primary);
+}
+
+body.light-theme .detail-item .text b {
+  color: var(--neon-purple);
+  background: rgba(15, 23, 42, 0.05);
+}
+
+body.light-theme .sheet-tip-box p {
+  color: var(--text-primary);
+}
+
+body.light-theme .answer-comparison-container {
+  background: rgba(15, 23, 42, 0.02);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+body.light-theme .answer-line.user-wrong {
+  color: rgba(15, 23, 42, 0.6);
+}
+
+body.light-theme .answer-line.correct-final {
+  color: rgba(15, 23, 42, 0.85);
+  border-top: 1px dashed rgba(15, 23, 42, 0.08);
 }
