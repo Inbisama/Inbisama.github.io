@@ -489,6 +489,8 @@ function handleEditorInput() {
   renderAttachedImages();
 }
 
+let dragSrcEl = null;
+
 function updatePreview() {
   let markdownText = markdownInput.value;
   // Rewrite assets/images/ to ../assets/images/ so they resolve correctly inside the /admin/ editor preview
@@ -500,12 +502,122 @@ function updatePreview() {
     breaks: true,
     gfm: true
   });
-  
-  const rawHtml = marked.parse(markdownText);
-  // Sanitize to prevent XSS
-  const cleanHtml = DOMPurify.sanitize(rawHtml);
-  
-  markdownPreview.innerHTML = cleanHtml || '<p style="color: var(--text-muted);">여기에 작성한 글이 실시간으로 렌더링됩니다.</p>';
+
+  if (!markdownText.trim()) {
+    markdownPreview.innerHTML = '<p style="color: var(--text-muted);">여기에 작성한 글이 실시간으로 렌더링됩니다.</p>';
+    return;
+  }
+
+  // Split by two or more newlines
+  const blockTexts = markdownText.split(/\n{2,}/);
+  markdownPreview.innerHTML = '';
+
+  blockTexts.forEach((blockText, index) => {
+    if (!blockText.trim()) return;
+
+    const rawHtml = marked.parse(blockText);
+    const cleanHtml = DOMPurify.sanitize(rawHtml);
+
+    // Create wrapper block element
+    const blockWrapper = document.createElement('div');
+    blockWrapper.className = 'editor-block';
+    blockWrapper.dataset.index = index;
+    blockWrapper.draggable = true;
+
+    // Create handle
+    const handle = document.createElement('div');
+    handle.className = 'block-drag-handle';
+    handle.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="5" r="1"></circle>
+        <circle cx="9" cy="12" r="1"></circle>
+        <circle cx="9" cy="19" r="1"></circle>
+        <circle cx="15" cy="5" r="1"></circle>
+        <circle cx="15" cy="12" r="1"></circle>
+        <circle cx="15" cy="19" r="1"></circle>
+      </svg>
+    `;
+
+    // Content wrapper
+    const content = document.createElement('div');
+    content.className = 'block-content';
+    content.innerHTML = cleanHtml;
+
+    blockWrapper.appendChild(handle);
+    blockWrapper.appendChild(content);
+
+    // Set up drag events
+    setupBlockDragEvents(blockWrapper);
+
+    markdownPreview.appendChild(blockWrapper);
+  });
+}
+
+function setupBlockDragEvents(el) {
+  el.addEventListener('dragstart', (e) => {
+    dragSrcEl = el;
+    el.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', el.dataset.index);
+  });
+
+  el.addEventListener('dragend', () => {
+    el.classList.remove('dragging');
+    document.querySelectorAll('.editor-block').forEach(item => {
+      item.classList.remove('drag-over');
+    });
+  });
+
+  el.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    el.classList.add('drag-over');
+  });
+
+  el.addEventListener('dragleave', () => {
+    el.classList.remove('drag-over');
+  });
+
+  el.addEventListener('drop', (e) => {
+    e.preventDefault();
+    el.classList.remove('drag-over');
+
+    if (dragSrcEl !== el) {
+      const draggedIndex = parseInt(e.dataTransfer.getData('text/plain'));
+      const targetIndex = parseInt(el.dataset.index);
+
+      reorderMarkdownBlocks(draggedIndex, targetIndex);
+    }
+  });
+}
+
+function reorderMarkdownBlocks(fromIndex, toIndex) {
+  let markdownText = markdownInput.value;
+  const blockTexts = markdownText.split(/\n{2,}/);
+
+  if (fromIndex < 0 || fromIndex >= blockTexts.length || toIndex < 0 || toIndex >= blockTexts.length) return;
+
+  const [draggedBlock] = blockTexts.splice(fromIndex, 1);
+  blockTexts.splice(toIndex, 0, draggedBlock);
+
+  markdownInput.value = blockTexts.join('\n\n');
+
+  updatePreview();
+  updateCharCount();
+
+  // Save auto-save draft state to local storage immediately
+  const draftData = {
+    id: currentPostId,
+    date: currentPostDate,
+    sha: currentPostSHA,
+    title: postTitle.value.trim(),
+    tags: postTags.value.split(',').map(t => t.trim()).filter(t => t),
+    coverImage: postCover.value.trim(),
+    draft: postDraft.checked,
+    content: markdownInput.value,
+    timestamp: Date.now()
+  };
+  localStorage.setItem('autosave_draft', JSON.stringify(draftData));
 }
 
 function updateCharCount() {
@@ -902,136 +1014,8 @@ function togglePreviewMode() {
 }
 
 // Move image block up or down (sliding paragraph positions)
-function moveImageBlock(imageSrc, direction) {
-  let text = markdownInput.value;
-  
-  // Split content by paragraphs/blocks
-  let blocks = text.split(/\n\n+/);
-  
-  // Find which block contains this image path
-  let blockIndex = blocks.findIndex(b => b.includes(imageSrc));
-  if (blockIndex === -1) return;
-
-  let targetIndex = direction === 'up' ? blockIndex - 1 : blockIndex + 1;
-  if (targetIndex < 0 || targetIndex >= blocks.length) {
-    showToast(direction === 'up' ? '이미 가장 위에 위치해 있습니다.' : '이미 가장 아래에 위치해 있습니다.', 'info');
-    return;
-  }
-
-  // Swap blocks in array
-  const temp = blocks[blockIndex];
-  blocks[blockIndex] = blocks[targetIndex];
-  blocks[targetIndex] = temp;
-
-  markdownInput.value = blocks.join('\n\n');
-  
-  updatePreview();
-  updateCharCount();
-  renderAttachedImages();
-  showToast('이미지 단락의 위치가 조정되었습니다.', 'success');
-}
-
-// Wrap image block with alignment tags
-function alignImageBlock(imageSrc, align) {
-  let text = markdownInput.value;
-  const escapedSrc = imageSrc.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-  
-  // Matches either existing <div align="...">...![...](imageSrc)...</div> OR just ![...](imageSrc)
-  const regexStr = '(?:<div align="[a-z]+">\\s*)?(!\\[.*?\\]\\(' + escapedSrc + '\\))(?:\\s*<\\/div>)?';
-  const regex = new RegExp(regexStr, 'g');
-
-  if (align === 'center') {
-    text = text.replace(regex, `<div align="center">$1</div>`);
-  } else if (align === 'left') {
-    text = text.replace(regex, `<div align="left">$1</div>`);
-  } else if (align === 'right') {
-    text = text.replace(regex, `<div align="right">$1</div>`);
-  } else {
-    text = text.replace(regex, '$1');
-  }
-
-  markdownInput.value = text;
-  
-  updatePreview();
-  updateCharCount();
-  renderAttachedImages();
-  showToast('정렬 상태가 변경되었습니다.', 'success');
-}
-
-// Delete image tag from markdown body
-function deleteImageFromContent(imageSrc) {
-  if (!confirm('본문에서 이 이미지를 삭제하시겠습니까?')) return;
-
-  let text = markdownInput.value;
-  const escapedSrc = imageSrc.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-  const regexStr = '(?:<div align="[a-z]+">\\s*)?(!\\[.*?\\]\\(' + escapedSrc + '\\))(?:\\s*<\\/div>)?';
-  const regex = new RegExp(regexStr, 'g');
-
-  markdownInput.value = text.replace(regex, '');
-  
-  updatePreview();
-  updateCharCount();
-  renderAttachedImages();
-  showToast('본문에서 이미지가 제거되었습니다.', 'success');
-}
-
-// Parse markdown to find all images and render manager thumbnail list
 function renderAttachedImages() {
-  const text = markdownInput.value;
-  const listContainer = document.getElementById('attached-images-list');
-  if (!listContainer) return;
-
-  // Find images matching ![alt](url)
-  const regex = /!\[(.*?)\]\((.*?)\)/g;
-  let match;
-  const images = [];
-
-  while ((match = regex.exec(text)) !== null) {
-    const alt = match[1];
-    const src = match[2];
-    if (!images.some(img => img.src === src)) {
-      images.push({ alt, src });
-    }
-  }
-
-  if (images.length === 0) {
-    listContainer.innerHTML = '<p class="empty-text">본문에 삽입된 이미지가 없습니다.</p>';
-    return;
-  }
-
-  listContainer.innerHTML = '';
-  images.forEach(img => {
-    const card = document.createElement('div');
-    card.className = 'attached-image-card';
-    
-    // safe name display
-    const displayName = img.alt || img.src.split('/').pop() || 'image';
-
-    card.innerHTML = `
-      <img src="${img.src.startsWith('assets/') ? '../' + img.src : img.src}" alt="${img.alt}" onerror="this.src='../assets/images/.gitkeep';">
-      <div class="attached-image-info" title="${img.alt}">${escapeHTML(displayName)}</div>
-      <div class="attached-image-controls">
-        <button class="btn-move-up" title="위로 한 블록 이동"><i data-lucide="arrow-up"></i></button>
-        <button class="btn-move-down" title="아래로 한 블록 이동"><i data-lucide="arrow-down"></i></button>
-        <button class="btn-align-left" title="왼쪽 정렬"><i data-lucide="align-left"></i></button>
-        <button class="btn-align-center" title="가운데 정렬"><i data-lucide="align-center"></i></button>
-        <button class="btn-align-right" title="오른쪽 정렬"><i data-lucide="align-right"></i></button>
-        <button class="btn-delete-img danger" title="본문에서 제거"><i data-lucide="trash-2"></i></button>
-      </div>
-    `;
-
-    // Add listeners
-    card.querySelector('.btn-move-up').addEventListener('click', () => moveImageBlock(img.src, 'up'));
-    card.querySelector('.btn-move-down').addEventListener('click', () => moveImageBlock(img.src, 'down'));
-    card.querySelector('.btn-align-left').addEventListener('click', () => alignImageBlock(img.src, 'left'));
-    card.querySelector('.btn-align-center').addEventListener('click', () => alignImageBlock(img.src, 'center'));
-    card.querySelector('.btn-align-right').addEventListener('click', () => alignImageBlock(img.src, 'right'));
-    card.querySelector('.btn-delete-img').addEventListener('click', () => deleteImageFromContent(img.src));
-
-    listContainer.appendChild(card);
-  });
-
-  lucide.createIcons();
+  // No-op to support new drag-and-drop block reordering
 }
 
 // Insert Text helper

@@ -840,94 +840,69 @@ textarea#markdown-input {
   }
 }
 
-/* Attached Images Manager Bar */
-.attached-images-section {
-  background-color: var(--bg-header);
-  border-top: 1px solid var(--border-color);
-  padding: 12px 16px;
-  flex-shrink: 0;
-}
-.section-title-sm {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.section-title-sm i {
-  width: 14px;
-  height: 14px;
-}
-.attached-images-list {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-.attached-images-list .empty-text {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  padding: 4px 0;
-}
-.attached-image-card {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-pane);
-  border-radius: 8px;
-  width: 140px;
-  flex-shrink: 0;
-  overflow: hidden;
+/* Live Preview Drag-and-Drop Blocks */
+.editor-block {
   position: relative;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  margin-bottom: 1.2rem;
+  padding: 8px 8px 8px 36px;
+  border: 1px dashed transparent;
+  border-radius: 8px;
+  transition: background-color 0.2s, border-color 0.2s;
 }
-.attached-image-card img {
-  width: 100%;
-  height: 70px;
-  object-fit: cover;
-  border-bottom: 1px solid var(--border-color);
+
+.editor-block:hover {
+  background-color: rgba(99, 102, 241, 0.03);
+  border-color: var(--border-color);
 }
-.attached-image-info {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  padding: 4px 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: center;
-}
-.attached-image-controls {
-  display: flex;
-  justify-content: space-around;
-  padding: 4px;
-  background-color: var(--bg-app);
-  border-top: 1px solid var(--border-color);
-}
-.attached-image-controls button {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  padding: 2px 4px;
-  border-radius: 4px;
-  color: var(--text-muted);
-  font-size: 0.75rem;
+
+.block-drag-handle {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  cursor: grab;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+  z-index: 10;
 }
-.attached-image-controls button:hover {
-  background-color: var(--border-color);
-  color: var(--text-main);
+
+.block-drag-handle svg {
+  width: 16px;
+  height: 16px;
 }
-.attached-image-controls button.danger:hover {
-  color: var(--danger-color);
+
+.editor-block:hover .block-drag-handle {
+  opacity: 0.7;
 }
-.attached-image-controls button i {
-  width: 12px;
-  height: 12px;
+
+.block-drag-handle:hover {
+  opacity: 1 !important;
+  color: var(--accent-color) !important;
+}
+
+.block-drag-handle:active {
+  cursor: grabbing;
+}
+
+.editor-block.dragging {
+  opacity: 0.4;
+  background-color: var(--code-bg);
+  border: 1px solid var(--accent-color);
+}
+
+.editor-block.drag-over {
+  border-top: 2px solid var(--accent-color);
+  background-color: rgba(99, 102, 241, 0.05);
+}
+
+.block-content {
+  min-height: 20px;
 }
 
 /* Drag & Drop Glow Effects */
