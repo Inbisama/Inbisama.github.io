@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inbisama.log</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Inbisama의 생각과 일상을 기록하는 공간">
+  <meta name="author" content="Inbisama">
+  <meta property="og:title" content="Inbisama.log">
+  <meta property="og:description" content="Inbisama의 생각과 일상을 기록하는 공간">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Marked.js (Markdown Parser) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  
+  <!-- DOMPurify (XSS Sanitizer) -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+  
+  <!-- Highlight.js (Code Syntax Highlighting) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" id="hljs-theme">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-theme">
+
+  <!-- Main Navigation Header -->
+  <header class="blog-header">
+    <div class="header-container">
+      <a href="#" class="logo title-font" id="logo-link">Inbisama.log</a>
+      
+      <div class="header-right">
+        <!-- Search input -->
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input type="text" id="search-input" placeholder="글 검색...">
+        </div>
+
+        <!-- Theme Toggle (Hidden as user requested pure white theme) -->
+        <button id="theme-toggle-btn" class="btn icon-btn-round" title="테마 변경" style="display: none;">
+          <i data-lucide="sun" class="sun-icon"></i>
+          <i data-lucide="moon" class="moon-icon"></i>
+        </button>
+
+        <!-- Admin Shortcut -->
+        <a href="admin/" class="btn icon-btn-round" title="관리자 페이지">
+          <i data-lucide="lock"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="hero-banner">
+    <div class="hero-container">
+      <h1 class="title-font" id="blog-title">안녕하세요, <span>Inbisama</span>입니다.</h1>
+      <p id="blog-description">Obsidian으로 정리한 지식과 소소한 일상, 개발 이야기를 기록하는 개인 블로그입니다.</p>
+    </div>
+  </section>
+
+  <!-- Content Container -->
+  <main class="main-content">
+    
+    <!-- Left Area: Posts list & filter tags -->
+    <div class="content-layout">
+      <!-- Tag filtering list -->
+      <aside class="tags-sidebar">
+        <h3 class="title-font"><i data-lucide="tags"></i> 태그 목록</h3>
+        <div id="tags-container" class="tags-container">
+          <button class="tag-badge active" data-tag="all">전체보기</button>
+          <!-- Dynamically populated -->
+        </div>
+      </aside>
+
+      <!-- Posts Grid -->
+      <section class="posts-section">
+        <h2 class="title-font section-title" id="list-title">최신 포스트</h2>
+        
+        <div id="posts-grid" class="posts-grid">
+          <!-- Dynamically populated post cards -->
+          <div class="loading-spinner">
+            <i data-lucide="loader" class="spin"></i> 글을 불러오는 중...
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right/Overlay Area: Single Post Reader (SPA detail view) -->
+    <article id="post-reader" class="post-reader hidden">
+      <button id="btn-close-reader" class="btn text-btn back-link">
+        <i data-lucide="arrow-left"></i> 목록으로 돌아가기
+      </button>
+      
+      <div class="reader-grid">
+        <!-- Left Column: Content -->
+        <div class="reader-container">
+          <div class="post-detail-header">
+            <h1 id="reader-title" class="title-font">포스트 제목</h1>
+            <div class="post-meta">
+              <span id="reader-date" class="meta-date"><i data-lucide="calendar"></i> 2026. 06. 11</span>
+              <div id="reader-tags" class="reader-tags">
+                <!-- Dynamically populated tags -->
+              </div>
+            </div>
+            <div id="reader-cover-container" class="reader-cover hidden">
+              <img id="reader-cover-img" src="" alt="Cover Image">
+            </div>
+          </div>
+
+          <div id="reader-content" class="markdown-body">
+            <!-- Decoded/Parsed post content -->
+          </div>
+        </div>
+
+        <!-- Right Column: Table of Contents (TOC) -->
+        <aside class="toc-sidebar" id="toc-sidebar">
+          <div class="toc-sticky-container">
+            <h4 class="title-font"><i data-lucide="list"></i> 목차</h4>
+            <nav id="toc-list" class="toc-list">
+              <!-- Dynamically populated headings -->
+              <p class="empty-toc">목차가 없습니다.</p>
+            </nav>
+          </div>
+        </aside>
+      </div>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="blog-footer">
+    <div class="footer-container">
+      <p>&copy; 2026 Inbisama. Powered by GitHub Pages.</p>
+      <div class="footer-links">
+        <a href="quiz/" class="footer-link"><i data-lucide="graduation-cap"></i> 퀴즈 풀기</a>
+        <a href="admin/" class="footer-link"><i data-lucide="settings"></i> 관리자 로그인</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
