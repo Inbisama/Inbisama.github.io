@@ -300,6 +300,12 @@ function showListView() {
   
   // Re-run list filter check
   renderFilteredPosts();
+
+  // Scroll posts section to top on desktop
+  const postsSection = document.querySelector('.posts-section');
+  if (postsSection) {
+    postsSection.scrollTo({ top: 0 });
+  }
 }
 
 // Load individual JSON post data
@@ -375,6 +381,10 @@ async function loadPostContent(postId) {
 
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    const readerContainer = document.querySelector('.reader-container');
+    if (readerContainer) {
+      readerContainer.scrollTo({ top: 0 });
+    }
   } catch (error) {
     console.error('Failed to load post details:', error);
     readerTitle.innerText = "포스트를 찾을 수 없습니다.";
@@ -441,16 +451,31 @@ function generateTOC() {
       e.preventDefault();
       const targetElement = document.getElementById(id);
       if (targetElement) {
-        const offset = 90;
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = targetElement.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition - offset;
+        const readerContainer = document.querySelector('.reader-container');
+        const isDesktop = window.innerWidth > 860;
+        
+        if (isDesktop && readerContainer) {
+          const containerScrollTop = readerContainer.scrollTop;
+          const containerRectTop = readerContainer.getBoundingClientRect().top;
+          const elementRectTop = targetElement.getBoundingClientRect().top;
+          const targetScrollTop = containerScrollTop + (elementRectTop - containerRectTop) - 20;
+          
+          readerContainer.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
+          });
+        } else {
+          const offset = 90;
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = targetElement.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
 
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
       }
     });
 
@@ -459,8 +484,11 @@ function generateTOC() {
 
   // Intersection Observer for scroll spy active heading highlight
   let activeTocItem = null;
+  const readerContainer = document.querySelector('.reader-container');
+  const isDesktop = window.innerWidth > 860;
+
   const observerOptions = {
-    root: null,
+    root: isDesktop ? readerContainer : null,
     rootMargin: '-100px 0px -70% 0px',
     threshold: 0
   };
