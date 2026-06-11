@@ -3,6 +3,7 @@ let postsCatalog = [];
 let activeTag = 'all';
 let searchQuery = '';
 let tocObserver = null;
+let isCatalogLoaded = false;
 
 // DOM Elements
 const postsGrid = document.getElementById('posts-grid');
@@ -113,6 +114,7 @@ async function loadBlogData() {
       throw new Error(`Failed to fetch catalog: ${response.status}`);
     }
     postsCatalog = await response.json();
+    isCatalogLoaded = true;
     
     // Sort posts by date descending
     postsCatalog.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -179,7 +181,7 @@ function updateActiveTagUI() {
 // Render filtered cards list
 function renderFilteredPosts() {
   // If catalog is not loaded yet, wait
-  if (postsCatalog.length === 0) return;
+  if (!isCatalogLoaded) return;
 
   const filtered = postsCatalog.filter(post => {
     if (post.draft) return false; // hide drafts from public listing
@@ -203,9 +205,12 @@ function renderFilteredPosts() {
   }
 
   if (filtered.length === 0) {
+    const message = searchQuery || activeTag !== 'all'
+      ? '검색 결과에 맞는 포스트가 없습니다.'
+      : '아직 작성된 포스트가 없습니다.';
     postsGrid.innerHTML = `
       <div class="loading-spinner">
-        검색 결과에 맞는 포스트가 없습니다.
+        ${message}
       </div>
     `;
     return;
