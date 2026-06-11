@@ -422,9 +422,17 @@ function generateTOC() {
   }
 
   const headings = readerContent.querySelectorAll('h1, h2, h3');
+  const readerGrid = document.querySelector('.reader-grid');
+  const tocSidebar = document.getElementById('toc-sidebar');
+
   if (headings.length === 0) {
     tocList.innerHTML = '<p class="empty-toc">목차가 없습니다.</p>';
+    if (readerGrid) readerGrid.classList.add('no-toc');
+    if (tocSidebar) tocSidebar.style.display = 'none';
     return;
+  } else {
+    if (readerGrid) readerGrid.classList.remove('no-toc');
+    if (tocSidebar) tocSidebar.style.display = '';
   }
 
   tocList.innerHTML = '';
