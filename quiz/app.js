@@ -392,6 +392,18 @@ function initQuizEvents() {
     closeExplanationSheet();
   });
 
+  // 힌트 활성화 상태에서 바깥 영역 클릭 시 닫기
+  document.addEventListener('click', (e) => {
+    const isHintActive = explanationSheet.classList.contains('active') && btnSheetClose.style.display === 'block';
+    if (isHintActive) {
+      const clickedSheet = explanationSheet.contains(e.target);
+      const clickedHintBtn = btnQuizHint.contains(e.target);
+      if (!clickedSheet && !clickedHintBtn) {
+        closeExplanationSheet();
+      }
+    }
+  });
+
   // 퀴즈 포기하고 로비로 탈출
   btnQuizExit.addEventListener('click', () => {
     if (timerInterval) clearInterval(timerInterval);
