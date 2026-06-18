@@ -203,7 +203,7 @@ function initLobby() {
         lobbyDesc.innerHTML = "교수님이 대놓고 짚어주신 25가지 족보!<br>노베이스 상태에서 완벽대비해 드립니다.";
       } else if (currentSubject === 'passenger') {
         lobbyTitle.innerHTML = "철도여객운송론 기말고사<br>유출 족보 퀴즈";
-        lobbyDesc.innerHTML = "기말고사 대비 실전 모의고사 25문항 수록!<br>교수님 강의 팁과 오답 해설로 철저히 준비합니다.";
+        lobbyDesc.innerHTML = "기말고사 대비 실전 모의고사 37문항 수록!<br>교수님 강의 팁과 오답 해설로 철저히 준비합니다.";
       } else {
         lobbyTitle.innerHTML = "전기동차 제어 기말고사<br>유출 족보 퀴즈";
         lobbyDesc.innerHTML = "제어 알고리즘 38선 및 주관식 4선 완벽 수록!<br>노베이스 상태에서 마스터해 드립니다.";
